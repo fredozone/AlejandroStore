@@ -50,8 +50,8 @@ function Login({ setToken }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: username,
-          password: password,
+          username: setUsernameAPI,
+          password: setPasswordAPI,
         }),
       });
       if (!response.ok) {
