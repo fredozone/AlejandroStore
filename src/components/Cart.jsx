@@ -11,12 +11,15 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Grid from "@mui/material/Grid";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 function Cart({ setCountProduct }) {
+  const [thankYou, setThankYou] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageTwo, setMessageTwo] = useState("");
   const [cart, setCart] = useState(() => {
     const storedCart = localStorage.getItem("cart");
     return storedCart ? JSON.parse(storedCart) : [];
@@ -126,8 +129,26 @@ function Cart({ setCountProduct }) {
     setTaxes(calculatedTaxes);
   }, [cartProducts, totalPrice, username]);
 
+  const handleCheckout = (username) => {
+    const updateCart = cart.filter(
+      (item) => !(item.username === username || item.username === "Guest")
+    );
+    setCart(updateCart);
+    setThankYou("THANK YOU!");
+    setMessage(`we are getting started on your order right away.`);
+    setMessageTwo("and you will receive an order confirmation email soon.");
+  };
   return (
     <div className="containerPage" style={{ minHeight: "78.2vh" }}>
+      {thankYou === "THANK YOU!" ? (
+        <>
+          <div className={thankYou === "THANK YOU!" ? "tankYouShopping" : ""}>
+            <h1>{thankYou}</h1>
+            <p>{message}</p>
+            <p>{messageTwo}</p>
+          </div>
+        </>
+      ) : null}
       {isLoading ? (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -346,7 +367,7 @@ function Cart({ setCountProduct }) {
                       </div>
                       <hr />
                       <Link
-                        onClick={() => handleSingleAddCart(product.id)}
+                        onClick={() => handleCheckout(username)}
                         className="button buttonAddCart checkoutCart"
                       >
                         Checkout

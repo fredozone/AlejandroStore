@@ -311,8 +311,20 @@ function Products({ searchInput }) {
       </List>
     </Box>
   );
+
+  const { thankYou, message, messageTwo } = location.state || {};
+  console.log(thankYou);
   return (
     <div className="containerPage">
+      {thankYou === "THANK YOU!" ? (
+        <>
+          <div className={thankYou === "THANK YOU!" ? "tankYouShopping" : ""}>
+            <h1>{thankYou}</h1>
+            <p>{message}</p>
+            <p>{messageTwo}</p>
+          </div>
+        </>
+      ) : null}
       {isLoading ? (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
