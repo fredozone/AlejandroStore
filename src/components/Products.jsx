@@ -120,21 +120,26 @@ function Products({ searchInput }) {
     });
   };
   //sort Price
-  const [minimum, setMinium] = useState("");
-  const [maximun, setMaximum] = useState("");
+  const [minimum, setMinimum] = useState(""); // Corrected variable name
+  const [maximum, setMaximum] = useState(""); // Corrected variable name
   const [priceRange, setPriceRange] = useState("");
-  const MaximunMinimun = (minimum, maximun) => {
-    if (minimum !== "" && maximun !== "") {
-      setItems(
-        [...originalItems].filter((range) => {
-          if (range.price >= minimum && range.price <= maximun) {
-            return range.price >= minimum && range.price <= maximun;
-          } else {
-            setPriceRange("Sorry, Price range not found.");
-            return originalItems;
-          }
-        })
-      );
+  const MaximunMinimun = (minimum, maximum) => {
+    // Corrected parameter name
+    if (minimum !== "" && maximum !== "") {
+      const filteredItems = [...originalItems].filter((item) => {
+        const itemPrice = parseFloat(item.price);
+        return (
+          itemPrice >= parseFloat(minimum) && itemPrice <= parseFloat(maximum)
+        );
+      });
+
+      if (filteredItems.length > 0) {
+        setPriceRange(""); // Clear any previous error message
+        setItems(filteredItems); // Set the filtered items
+      } else {
+        setPriceRange("Sorry, Price range not found."); // Set an error message
+        setItems([]); // Clear the items list or set to an empty array if you want to indicate no results
+      }
     }
   };
 
@@ -249,7 +254,7 @@ function Products({ searchInput }) {
                   <AttachMoneyIcon />
                 </InputAdornment>
               }
-              onChange={(e) => setMinium(e.target.value)}
+              onChange={(e) => setMinimum(e.target.value)}
             />
           </FormControl>
           <FormControl variant="standard">
@@ -267,7 +272,7 @@ function Products({ searchInput }) {
           <Button
             variant="contained"
             onClick={() => {
-              MaximunMinimun(minimum, maximun);
+              MaximunMinimun(minimum, maximum);
               toggleDrawer(anchor, false);
             }}
             className="buttonFilterPrice"
@@ -312,19 +317,8 @@ function Products({ searchInput }) {
     </Box>
   );
 
-  const { thankYou, message, messageTwo } = location.state || {};
-  console.log(thankYou);
   return (
     <div className="containerPage">
-      {thankYou === "THANK YOU!" ? (
-        <>
-          <div className={thankYou === "THANK YOU!" ? "tankYouShopping" : ""}>
-            <h1>{thankYou}</h1>
-            <p>{message}</p>
-            <p>{messageTwo}</p>
-          </div>
-        </>
-      ) : null}
       {isLoading ? (
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
